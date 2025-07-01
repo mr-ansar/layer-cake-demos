@@ -13,7 +13,7 @@ def server(self, server_address: lc.HostPort=None):
 	if not isinstance(m, lc.Listening):
 		return m
 
-	lc.subscribe(self, r'test-multihosting:worker-2:[-a-f0-9]+', scope=lc.ScopeOfDirectory.LAN)
+	lc.subscribe(self, r'test-multihosting:worker-2:[-a-f0-9]+')
 	m = self.input()
 	if not isinstance(m, lc.Subscribed):
 		return m

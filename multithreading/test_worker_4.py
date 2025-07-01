@@ -15,7 +15,7 @@ def worker(self):
 		else:
 			continue
 
-		table = texture(self, x=m.x, y=m.y)
+		table = texture(x=m.x, y=m.y)
 		self.send(lc.cast_to(table, table_type), self.return_address)
 
 lc.bind(worker)

@@ -3,7 +3,7 @@ import random
 
 random.seed()
 
-def texture(self, x: int=8, y: int=8) -> list[list[float]]:
+def texture(x: int=8, y: int=8) -> list[list[float]]:
 	table = []
 	for r in range(y):
 		row = [None] * x
