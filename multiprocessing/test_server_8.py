@@ -1,7 +1,7 @@
-# test_server_1.py
+# test_server_8.py
 import layer_cake as lc
 from test_api import Xy, table_type
-from test_function_1 import texture
+from test_worker_8 import worker
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
 SERVER_API = (Xy,)
@@ -9,15 +9,24 @@ SERVER_API = (Xy,)
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS
 
+	# Open a network port for HTTP clients, e.g. curl.
 	lc.listen(self, server_address, http_server=SERVER_API)
 	m = self.input()
 	if not isinstance(m, lc.Listening):
 		return m
 
+	worker_spool = self.create(lc.ObjectSpool, lc.ProcessObject, worker)
+
+	# Run a live network service.
 	while True:
 		m = self.input()
 		if isinstance(m, Xy):
 			pass
+		elif isinstance(m, lc.Returned):
+			d = self.debrief()
+			if isinstance(d, lc.OnReturned):
+				d(self, m)
+			continue
 		elif isinstance(m, lc.Faulted):
 			return m
 		elif isinstance(m, lc.Stop):
@@ -25,12 +34,12 @@ def server(self, server_address: lc.HostPort=None):
 		else:
 			continue
 
-		client_address = self.return_address
-		self.create(lc.ProcessObject, texture, x=m.x, y=m.y)
-		m = self.input()
-		response = m.value
+		# Callback for on_return.
+		def respond(self, response, args):
+			self.send(lc.cast_to(response, self.returned_type), args.return_address)
 
-		self.send(lc.cast_to(response, self.received_type), client_address)
+		a = self.create(lc.GetResponse, m, worker_spool)
+		self.on_return(a, respond, return_address=self.return_address)
 
 lc.bind(server)
 

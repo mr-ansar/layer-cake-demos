@@ -1,7 +1,7 @@
-# test_server_4.py
+# test_server_6.py
 import layer_cake as lc
 from test_api import Xy, table_type
-from test_worker_4 import worker
+from test_function_6 import texture
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
 SERVER_API = (Xy,)
@@ -9,15 +9,11 @@ SERVER_API = (Xy,)
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS
 
-	# Open a network port for HTTP clients, e.g. curl.
 	lc.listen(self, server_address, http_server=SERVER_API)
 	m = self.input()
 	if not isinstance(m, lc.Listening):
 		return m
 
-	worker_spool = self.create(lc.ObjectSpool, lc.ProcessObject, worker)
-
-	# Run a live network service.
 	while True:
 		m = self.input()
 		if isinstance(m, Xy):
@@ -38,7 +34,7 @@ def server(self, server_address: lc.HostPort=None):
 		def respond(self, response, args):
 			self.send(lc.cast_to(response, self.returned_type), args.return_address)
 
-		a = self.create(lc.GetResponse, m, worker_spool)
+		a = self.create(lc.ProcessObject, texture, x=m.x, y=m.y)
 		self.on_return(a, respond, return_address=self.return_address)
 
 lc.bind(server)

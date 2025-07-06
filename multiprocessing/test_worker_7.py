@@ -1,7 +1,7 @@
-# test_worker_4.py
+# test_worker_7.py
 import layer_cake as lc
 from test_api import Xy, table_type
-from test_function_4 import texture
+from test_function_7 import texture
 
 def worker(self):
 	while True:

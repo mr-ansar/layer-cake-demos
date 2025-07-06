@@ -1,4 +1,4 @@
-# test_function_1.py
+# test_function_7.py
 import random
 
 random.seed()

@@ -1,4 +1,4 @@
-# connect_and_request.py
+# connect_and_request_not_threaded.py
 import layer_cake as lc
 import random
 from test_api import Xy, table_type
@@ -9,10 +9,10 @@ random.seed()
 #
 DEFAULT_SERVER = lc.HostPort('127.0.0.1', 5050)
 
-class ConnectAndRequest(lc.Threaded, lc.Stateless):
+class ConnectAndRequest(lc.Point, lc.Stateless):
 	def __init__(self, server_address: lc.HostPort=None,
 			request_count: int=1, slow_down: float=0.5, big_table: int=100):
-		lc.Threaded.__init__(self)
+		lc.Point.__init__(self)
 		lc.Stateless.__init__(self)
 		self.server_address = server_address or DEFAULT_SERVER
 		self.request_count = request_count
@@ -62,15 +62,6 @@ def ConnectAndRequest_NotConnected(self, message):
 def ConnectAndRequest_list_list_float(self, message):
 	self.post_response(message)
 
-def ConnectAndRequest_T1(self, message):
-	self.send_request()
-
-def ConnectAndRequest_Closed(self, message):
-	self.complete()
-
-def ConnectAndRequest_Stop(self, message):
-	self.complete(lc.Aborted())
-
 def ConnectAndRequest_Busy(self, message):
 	self.request_count -= 1
 	if self.request_count < 1:
@@ -79,6 +70,15 @@ def ConnectAndRequest_Busy(self, message):
 
 	s = lc.spread_out(self.slow_down)
 	self.start(lc.T1, s)
+
+def ConnectAndRequest_T1(self, message):
+	self.send_request()
+
+def ConnectAndRequest_Closed(self, message):
+	self.complete(lc.Ack())
+
+def ConnectAndRequest_Stop(self, message):
+	self.complete(lc.Aborted())
 
 def ConnectAndRequest_Faulted(self, message):
 	self.complete(message)
@@ -96,7 +96,8 @@ CONNECT_AND_REQUEST_DISPATCH = (
 
 lc.bind(ConnectAndRequest,
 	CONNECT_AND_REQUEST_DISPATCH,
-	return_type=lc.Any())
+	return_type=lc.Any(),
+	thread='connect-and-request')
 
 if __name__ == '__main__':
 	lc.create(ConnectAndRequest)

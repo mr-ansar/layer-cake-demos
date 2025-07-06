@@ -1,9 +1,16 @@
-# test_worker_4.py
+# test_worker_11.py
+import uuid
 import layer_cake as lc
 from test_api import Xy, table_type
-from test_function_4 import texture
+from test_function_11 import texture
 
 def worker(self):
+	tag = uuid.uuid4()
+	lc.publish(self, f'test-multihosting:worker-2:{tag}')
+	m = self.input()
+	if not isinstance(m, lc.Published):
+		return m
+
 	while True:
 		m = self.input()
 		if isinstance(m, Xy):
@@ -18,7 +25,7 @@ def worker(self):
 		table = texture(x=m.x, y=m.y)
 		self.send(lc.cast_to(table, table_type), self.return_address)
 
-lc.bind(worker, api=(Xy,))
+lc.bind(worker)
 
 if __name__ == '__main__':
 	lc.create(worker)

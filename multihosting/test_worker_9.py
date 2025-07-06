@@ -1,7 +1,7 @@
-# test_worker_1.py
+# test_worker_9.py
 import layer_cake as lc
 from test_api import Xy, table_type
-from test_function_1 import texture
+from test_function_9 import texture
 
 def worker(self):
 	lc.publish(self, 'test-multihosting:worker-1')

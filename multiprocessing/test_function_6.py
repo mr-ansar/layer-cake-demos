@@ -1,4 +1,4 @@
-# test_function_2.py
+# test_function_6.py
 import random
 import layer_cake as lc
 
