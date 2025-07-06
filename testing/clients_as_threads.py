@@ -1,4 +1,4 @@
-# client_as_thread.py
+# clients_as_threads.py
 import layer_cake as lc
 import random
 from test_api import Xy, table_type
