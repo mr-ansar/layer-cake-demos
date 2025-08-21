@@ -6,7 +6,7 @@ from test_function_11 import texture
 
 def worker(self):
 	tag = uuid.uuid4()
-	lc.publish(self, f'test-multihosting:worker-2:{tag}')
+	lc.publish(self, f'test-multihosting:worker-11:{tag}')
 	m = self.input()
 	if not isinstance(m, lc.Published):
 		return m

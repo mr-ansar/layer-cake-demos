@@ -28,7 +28,10 @@ def clients_as_threads(self, client_type: lc.Type=None,
 
 	def check_response(self, value, args):
 		if isinstance(value, lc.Faulted):
-			return
+			if not isinstance(value, lc.TimedOut):
+				return
+			self.warning(fault=str(value), tag=lc.portable_to_tag(self.returned_type))
+
 		a = self.create(lc.Delay, seconds=slow_down)
 		self.on_return(a, restart)
 
@@ -53,6 +56,11 @@ def clients_as_threads(self, client_type: lc.Type=None,
 			d = self.debrief()
 			if isinstance(d, lc.OnReturned):
 				d(self, m)
+				continue
+
+			value, port = m.cast_back()
+			self.warning(fault=str(value), tag=lc.portable_to_tag(port))
+
 
 	# Wait for clearing of clients.
 	while self.working():

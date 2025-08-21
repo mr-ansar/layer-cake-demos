@@ -18,7 +18,7 @@ def worker(self):
 		table = texture(x=m.x, y=m.y)
 		self.send(lc.cast_to(table, table_type), self.return_address)
 
-lc.bind(worker, api=(Xy,))
+lc.bind(worker, entry_point=[Xy,])
 
 if __name__ == '__main__':
 	lc.create(worker)

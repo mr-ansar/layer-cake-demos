@@ -4,7 +4,7 @@ from test_api import Xy, table_type
 from test_function_9 import texture
 
 def worker(self):
-	lc.publish(self, 'test-multihosting:worker-1')
+	lc.publish(self, 'test-multihosting:worker-9')
 	m = self.input()
 	if not isinstance(m, lc.Published):
 		return m

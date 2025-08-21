@@ -6,7 +6,7 @@ from test_function_10 import texture
 
 def worker(self):
 	tag = uuid.uuid4()
-	lc.publish(self, f'test-multihosting:worker-2:{tag}')
+	lc.publish(self, f'test-multihosting:worker-10:{tag}', scope=lc.ScopeOfDirectory.LAN)
 	m = self.input()
 	if not isinstance(m, lc.Published):
 		return m
@@ -25,7 +25,7 @@ def worker(self):
 		table = texture(x=m.x, y=m.y)
 		self.send(lc.cast_to(table, table_type), self.return_address)
 
-lc.bind(worker)
+lc.bind(worker, entry_point=[Xy,])
 
 if __name__ == '__main__':
 	lc.create(worker)

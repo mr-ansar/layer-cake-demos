@@ -3,9 +3,9 @@ import layer_cake as lc
 from test_api import Xy
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
-SERVER_API = (Xy,)
+SERVER_API = [Xy,]
 
-def server(self, server_address: lc.HostPort=None, size_of_queue: int=None, responsiveness: float=None, busy_fraction: int=10):
+def server(self, server_address: lc.HostPort=None, size_of_queue: int=None, responsiveness: float=None, busy_pass_rate: int=10):
 	server_address = server_address or DEFAULT_ADDRESS
 
 	lc.listen(self, server_address, http_server=SERVER_API)
@@ -13,13 +13,13 @@ def server(self, server_address: lc.HostPort=None, size_of_queue: int=None, resp
 	if not isinstance(m, lc.Listening):
 		return m
 
-	lc.subscribe(self, r'test-multihosting:worker-2:[-a-f0-9]+')
+	lc.subscribe(self, r'test-multihosting:worker-11:[-a-f0-9]+', scope=lc.ScopeOfDirectory.LAN)
 	m = self.input()
 	if not isinstance(m, lc.Subscribed):
 		return m
 	subscribed = m
 
-	worker_spool = self.create(lc.ObjectSpool, None, size_of_queue=size_of_queue, responsiveness=responsiveness, busy_fraction=busy_fraction)
+	worker_spool = self.create(lc.ObjectSpool, None, size_of_queue=size_of_queue, responsiveness=responsiveness, busy_pass_rate=busy_pass_rate)
 
 	while True:
 		m = self.input()

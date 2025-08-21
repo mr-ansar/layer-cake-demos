@@ -8,4 +8,11 @@ class Xy(object):
 
 lc.bind(Xy)
 
+class Customer(object):
+	def __init__(self, name: str=None, age: int=None):
+		self.name = name
+		self.age = age
+
+lc.bind(Customer)
+
 table_type = lc.def_type(list[list[float]])

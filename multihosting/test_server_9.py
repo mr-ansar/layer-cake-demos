@@ -3,7 +3,7 @@ import layer_cake as lc
 from test_api import Xy
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
-SERVER_API = (Xy,)
+SERVER_API = [Xy,]
 
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS
@@ -13,7 +13,7 @@ def server(self, server_address: lc.HostPort=None):
 	if not isinstance(m, lc.Listening):
 		return m
 
-	lc.subscribe(self, 'test-multihosting:worker-1')
+	lc.subscribe(self, 'test-multihosting:worker-9')
 	m = self.input()
 	if not isinstance(m, lc.Subscribed):
 		return m

@@ -4,7 +4,7 @@ from test_api import Xy, table_type
 from test_function_5 import texture
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
-SERVER_API = (Xy,)
+SERVER_API = [Xy,]
 
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS
@@ -28,9 +28,9 @@ def server(self, server_address: lc.HostPort=None):
 		client_address = self.return_address
 		self.create(lc.ProcessObject, texture, x=m.x, y=m.y)
 		m = self.input()
-		response = m.value
+		response = m.message
 
-		self.send(lc.cast_to(response, self.received_type), client_address)
+		self.send(response, client_address)
 
 lc.bind(server)
 

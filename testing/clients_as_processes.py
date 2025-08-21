@@ -33,6 +33,9 @@ def clients_as_processes(self, process_count: int=1, thread_count: int=1,
 			ending = lc.Aborted()
 		elif isinstance(m, lc.Returned):
 			d = self.debrief()
+			value, port = m.cast_back()
+			if isinstance(value, lc.Faulted):
+				self.warning(fault=str(value), tag=lc.portable_to_tag(port))
 
 	return ending
 

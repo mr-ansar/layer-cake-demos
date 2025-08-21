@@ -4,7 +4,7 @@ from test_api import Xy, table_type
 from test_function_6 import texture
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
-SERVER_API = (Xy,)
+SERVER_API = [Xy,]
 
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS

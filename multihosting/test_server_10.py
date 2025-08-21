@@ -1,10 +1,15 @@
 # test_server_10.py
+from enum import Enum
+from uuid import UUID
 import layer_cake as lc
-from test_api import Xy
+from test_api import Xy, Customer, table_type
+from test_worker_10 import worker
 
 DEFAULT_ADDRESS = lc.HostPort('127.0.0.1', 5050)
-SERVER_API = (Xy,)
+SERVER_API = [Xy, Customer]
 
+#
+#
 def server(self, server_address: lc.HostPort=None):
 	server_address = server_address or DEFAULT_ADDRESS
 
@@ -13,7 +18,7 @@ def server(self, server_address: lc.HostPort=None):
 	if not isinstance(m, lc.Listening):
 		return m
 
-	lc.subscribe(self, r'test-multihosting:worker-2:[-a-f0-9]+')
+	lc.subscribe(self, r'test-multihosting:worker-10:[-a-f0-9]+', scope=lc.ScopeOfDirectory.LAN)
 	m = self.input()
 	if not isinstance(m, lc.Subscribed):
 		return m
@@ -42,14 +47,13 @@ def server(self, server_address: lc.HostPort=None):
 		else:
 			continue
 
-		# Callback for on_return.
 		def respond(self, response, args):
 			self.send(lc.cast_to(response, self.returned_type), args.return_address)
 
 		a = self.create(lc.GetResponse, m, worker_spool)
 		self.on_return(a, respond, return_address=self.return_address)
 
-lc.bind(server)
+lc.bind(server, return_type=lc.Any())
 
 if __name__ == '__main__':
 	lc.create(server)

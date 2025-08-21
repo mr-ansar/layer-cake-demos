@@ -1,10 +1,11 @@
 # test_function_6.py
 import random
 import layer_cake as lc
+from test_api import table_type
 
 random.seed()
 
-def texture(self, x: int=8, y: int=8) -> list[list[float]]:
+def texture(self, x=8, y=8):
 	table = []
 	for r in range(y):
 		row = [None] * x
@@ -14,7 +15,7 @@ def texture(self, x: int=8, y: int=8) -> list[list[float]]:
 
 	return table
 
-lc.bind(texture)
+lc.bind(texture, return_type=table_type, x=int, y=int)
 
 if __name__ == '__main__':
 	lc.create(texture)
