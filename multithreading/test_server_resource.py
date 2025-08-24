@@ -12,8 +12,8 @@ RESOURCE_FORM = lc.ReForm('/{resource}(/{identity})?', resource=r'\w+', identity
 # is available (see below).
 DB = lc.Gas(
 	type=lc.def_type(dict[int,Customer]),	# What's in there.
-	file=None,									# Storage I/O.
-	memory=None,								# In-memory image.
+	file=None,								# Storage I/O.
+	memory=None,							# In-memory image.
 	counter=1
 )
 
@@ -86,7 +86,7 @@ def server(self, server_address: lc.HostPort=None):
 	DB.file = model.file('customers', DB.type, create_default=True)
 	DB.memory = DB.file.recover()
 
-	# A cheap, reliable alternative to storing the next serial id.
+	# A cheap, basic alternative to storing the next serial id.
 	DB.counter = 1 if len(DB.memory) < 1 else max(DB.memory.keys()) + 1
 
 	lc.listen(self, server_address, uri_form=RESOURCE_FORM)
