@@ -14,7 +14,7 @@ def clients_as_threads(self, thread_count: int=1,
 	request_count: int=1, slow_down: float=1.0, big_table: int=100):
 	self.server_address = server_address or DEFAULT_SERVER
 
-	lc.connect(self, self.server_address, http_client='/', layer_cake_json=True)
+	lc.connect(self, self.server_address, http_client='/', application_json=True)
 	m = self.input()
 	if not isinstance(m, lc.Connected):
 		return m

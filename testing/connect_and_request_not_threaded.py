@@ -50,7 +50,7 @@ class ConnectAndRequest(lc.Point, lc.Stateless):
 		self.start(lc.T1, s)
 
 def ConnectAndRequest_Start(self, message):
-	lc.connect(self, self.server_address, http_client='/', layer_cake_json=True)
+	lc.connect(self, self.server_address, http_client='/', application_json=True)
 
 def ConnectAndRequest_Connected(self, message):
 	self.client_address = self.return_address

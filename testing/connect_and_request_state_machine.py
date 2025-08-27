@@ -58,7 +58,7 @@ class ConnectAndRequest(lc.Point, lc.StateMachine):
 		return GLARING
 
 def ConnectAndRequest_INITIAL_Start(self, message):
-	lc.connect(self, self.server_address, http_client='/', layer_cake_json=True)
+	lc.connect(self, self.server_address, http_client='/', application_json=True)
 	return CONNECTING
 
 def ConnectAndRequest_CONNECTING_Connected(self, message):
