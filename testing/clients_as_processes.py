@@ -9,7 +9,7 @@ DEFAULT_SERVER = lc.HostPort('127.0.0.1', 5050)
 
 #
 #
-def clients_as_processes(self, process_count: int=1, thread_count: int=1,
+def clients_as_processes(self, process_count: int=1, thread_count: int=1, test_span: lc.TimeSpan=None,
 	client_type: lc.Type=None, server_address: lc.HostPort=None,
 	request_count: int=1, slow_down: float=1.0, big_table: int=100):
 	server_address = server_address or DEFAULT_SERVER
@@ -23,21 +23,32 @@ def clients_as_processes(self, process_count: int=1, thread_count: int=1,
 			big_table=big_table)
 		self.assign(a, i)
 
-	# Two ways this can end - control-c and faults.
-	ending = lc.Faulted('too many client faults', 'see logs')
+	if test_span is not None:
+		self.start(lc.T1, test_span)
 
+	unexpected = 0
 	while self.working():
 		m = self.input()
 		if isinstance(m, lc.Stop):
 			self.abort()
-			ending = lc.Aborted()
+		elif isinstance(m, lc.T1):
+			self.abort()
 		elif isinstance(m, lc.Returned):
 			d = self.debrief()
 			value, port = m.cast_back()
-			if isinstance(value, lc.Faulted):
-				self.warning(fault=str(value), tag=lc.portable_to_tag(port))
 
-	return ending
+			# Termination due to abort().
+			if isinstance(value, lc.Aborted):
+				continue
+
+			# Something less desirable.
+			if isinstance(value, lc.Faulted):
+				self.warning('Faulted', fault=str(value))
+			else:
+				self.warning('Unexpected', tag=lc.portable_to_tag(port))
+			unexpected += 1
+
+	return lc.cast_to(unexpected, lc.int_type)
 
 lc.bind(clients_as_processes)
 
